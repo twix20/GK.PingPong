@@ -6,6 +6,9 @@
 //#include "GL/glew.h"
 #include <GL/glu.h>
 
+#define _USE_MATH_DEFINES
+#include <cmath>
+
 
 void gl_helper::DebugPoint(float x, float y) {
 
@@ -24,10 +27,8 @@ void gl_helper::DebugPoint(float x, float y) {
 }
 
 
-void gl_helper::DrawRect(int x, int y, int width, int height)
+void gl_helper::DrawRect(const int x, const int y, const int width, const int height)
 {
-
-
 	glBegin(GL_QUADS);
 
 	//Buttom Left
@@ -40,10 +41,37 @@ void gl_helper::DrawRect(int x, int y, int width, int height)
 	glVertex2f(x, y + height);
 
 	glEnd();
-
-
 }
 
+void gl_helper::DrawCircle(int cx, int cy, float radius)
+{
+	//glBegin(GL_LINE_LOOP);
+	//for (int i = 0; i < CIRCLE_SEGMENTS; i++)
+	//{
+	//	float theta = 2.0f * M_PI * float(i) / float(CIRCLE_SEGMENTS);//get the current angle 
+
+	//	const int x = radius * cosf(theta);//calculate the x component 
+	//	const int y = radius * sinf(theta);//calculate the y component 
+
+	//	printf("%d %d\n", x + cx, y + cy);
+
+	//	glVertex2f(x + cx, y + cy);//output vertex 
+	//}
+	//glEnd();
+
+
+	const unsigned int triangles = 20; // number of triangles
+	const float twoPi = 2.0f * M_PI;
+	glBegin(GL_TRIANGLE_FAN);
+	glVertex2f(cx, cy); // origin
+	float delta = twoPi / triangles;
+	for (unsigned int i = 0; i <= triangles; i++)
+	{
+
+		glVertex2f(cx + (radius * cos(i *  delta)), cy + (radius * sin(i * delta)));
+	}
+	glEnd();
+}
 
 
 void gl_helper::DrawNumber(int x, int y, int n)
