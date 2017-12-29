@@ -11,6 +11,7 @@ public:
 
 	CBall(Position2D position, float radius) ;
 	~CBall();
+
 	void DrawMe() override;
 };
 
