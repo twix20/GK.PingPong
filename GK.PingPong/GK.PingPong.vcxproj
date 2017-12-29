@@ -156,6 +156,7 @@
     <ClInclude Include="CBall.h" />
     <ClInclude Include="CObject2D.h" />
     <ClInclude Include="CRacket.h" />
+    <ClInclude Include="CScoreBoard.h" />
     <ClInclude Include="gl_helper.h" />
     <ClInclude Include="Position2D.h" />
     <ClInclude Include="stdafx.h" />
@@ -165,6 +166,7 @@
     <ClCompile Include="CBall.cpp" />
     <ClCompile Include="CObject2D.cpp" />
     <ClCompile Include="CRacket.cpp" />
+    <ClCompile Include="CScoreBoard.cpp" />
     <ClCompile Include="GK.PingPong.cpp" />
     <ClCompile Include="gl_helper.cpp" />
     <ClCompile Include="stdafx.cpp">
