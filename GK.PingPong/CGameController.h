@@ -12,9 +12,10 @@
 #define RACKET_INIT_HEIGHT 100
 #define RACKET_INIT_SPEED 7
 
-const int gameWidth = 450, gameHeight = 450;
+#define GAME_WIDTH 450
+#define GAME_HEIGHT 450
 
-typedef void(*KeyCallback)(GLFWwindow*, int, int, int, int);
+typedef void(*KeysCallback)(GLFWwindow*, int, int, int, int);
 
 
 class CGameController
@@ -37,9 +38,11 @@ public:
 	CGameController();
 	~CGameController();
 
-	void Start(KeyCallback keyCb);
+	void DrawAll();
 
+	void Start(KeysCallback keysCb);
 	void Reset();
+
 	void Collisions();
 	static bool Between(int target, int min, int max);
 };

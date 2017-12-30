@@ -14,11 +14,11 @@
 
 CGameController::CGameController()
 {
-	racketLeft = new CRacket({ 0, gameHeight / 2 - 50 }, RACKET_INIT_WIDTH, RACKET_INIT_HEIGHT, RACKET_INIT_SPEED);
-	racketRight = new CRacket({ gameWidth - 10, gameHeight / 2 - 50 }, RACKET_INIT_WIDTH, RACKET_INIT_HEIGHT, RACKET_INIT_SPEED);
+	racketLeft = new CRacket({ 0, GAME_HEIGHT / 2 - 50 }, RACKET_INIT_WIDTH, RACKET_INIT_HEIGHT, RACKET_INIT_SPEED);
+	racketRight = new CRacket({ GAME_WIDTH - 10, GAME_HEIGHT / 2 - 50 }, RACKET_INIT_WIDTH, RACKET_INIT_HEIGHT, RACKET_INIT_SPEED);
 
-	ball = new CBall({ gameWidth / 2 - 5, gameHeight / 2 - 5 }, 10.0f);
-	scoreBoard = new CScoreBoard({ gameWidth / 2, 10 });
+	ball = new CBall({ GAME_WIDTH / 2 - 5, GAME_HEIGHT / 2 - 5 }, 10.0f);
+	scoreBoard = new CScoreBoard({ GAME_WIDTH / 2, 10 });
 }
 
 
@@ -29,17 +29,29 @@ CGameController::~CGameController()
 	delete scoreBoard;
 }
 
-void CGameController::Start(KeyCallback keyCb)
+void CGameController::DrawAll()
+{
+	//Left Racket
+	racketLeft->DrawMe();
+	//Right Racket
+	racketRight->DrawMe();
+	//Ball
+	ball->DrawMe();
+	//Score Board
+	scoreBoard->DrawMe();
+}
+
+void CGameController::Start(const KeysCallback keysCb)
 {
 	glfwInit();
 
 	//Hints Before Window Creation
 	glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
 
-	GLFWwindow * window = glfwCreateWindow(gameWidth, gameHeight, "PingPong", nullptr, nullptr);
+	GLFWwindow * window = glfwCreateWindow(GAME_WIDTH, GAME_HEIGHT, "PingPong", nullptr, nullptr);
 	glfwMakeContextCurrent(window);
 
-	glfwSetKeyCallback(window, keyCb);
+	glfwSetKeyCallback(window, keysCb);
 
 	time = glfwGetTime()*TimeSpeed;
 
@@ -50,7 +62,7 @@ void CGameController::Start(KeyCallback keyCb)
 
 		glLoadIdentity();
 
-		glOrtho(0, gameWidth, gameHeight, 0, 0, 1);
+		glOrtho(0, GAME_WIDTH, GAME_HEIGHT, 0, 0, 1);
 
 		glDisable(GL_DEPTH_TEST);
 
@@ -65,14 +77,7 @@ void CGameController::Start(KeyCallback keyCb)
 		//Collision Detection
 		Collisions();
 
-		//Left Racket
-		this->racketLeft->DrawMe();
-		//Right Racket
-		this->racketRight->DrawMe();
-		//ball
-		this->ball->DrawMe();
-		//Score
-		this->scoreBoard->DrawMe();
+		DrawAll();
 
 		glfwSwapBuffers(window);
 		glfwSwapInterval(1);
@@ -92,23 +97,23 @@ void CGameController::Reset()
 	time = 0.0;
 
 	//Reset ball
-	this->ball->pos.x = gameWidth / 2 - ball->radius / 2;
-	this->ball->velocityX = 1;
-	this->ball->velocityY = 0;
+	ball->pos.x = GAME_WIDTH / 2 - ball->radius / 2;
+	ball->velocityX = 1;
+	ball->velocityY = 0;
 
 	StoredVelocity = 0;
 
 	//Reset Rackets
-	this->racketRight->racketSpeed = RACKET_INIT_SPEED;
-	this->racketRight->height = RACKET_INIT_HEIGHT;
-	this->racketRight->width = RACKET_INIT_WIDTH;
+	racketRight->racketSpeed = RACKET_INIT_SPEED;
+	racketRight->height = RACKET_INIT_HEIGHT;
+	racketRight->width = RACKET_INIT_WIDTH;
 
-	this->racketLeft->racketSpeed = RACKET_INIT_SPEED;
-	this->racketLeft->height = RACKET_INIT_HEIGHT;
-	this->racketLeft->width = RACKET_INIT_WIDTH;
+	racketLeft->racketSpeed = RACKET_INIT_SPEED;
+	racketLeft->height = RACKET_INIT_HEIGHT;
+	racketLeft->width = RACKET_INIT_WIDTH;
 
-	if (this->scoreBoard->ShouldGameEnd()) {
-		this->scoreBoard->Reset();
+	if (scoreBoard->ShouldGameEnd()) {
+		scoreBoard->Reset();
 	}
 }
 
@@ -118,79 +123,79 @@ void CGameController::Collisions() {
 
 		time = glfwGetTime()*TimeSpeed;
 
-		this->ball->pos.x += this->ball->velocityX;
+		ball->pos.x += ball->velocityX;
 
-		StoredVelocity += this->ball->velocityY;
+		StoredVelocity += ball->velocityY;
 
 		if (StoredVelocity > 1.0f) {
-			this->ball->pos.y += 1;
+			ball->pos.y += 1;
 			StoredVelocity -= 1;
 		}
 		else if (StoredVelocity < -1.0f) {
-			this->ball->pos.y -= 1;
+			ball->pos.y -= 1;
 			StoredVelocity += 1;
 
 		}
 	}
 
 
-	if (this->ball->pos.x > gameWidth - this->racketRight->width * 2) { //ball at Right Edge
+	if (ball->pos.x > GAME_WIDTH - racketRight->width * 2) { //ball at Right Edge
 
-		if (Between(this->ball->pos.y, this->racketRight->pos.y + this->racketRight->height, this->racketRight->pos.y)) {
+		if (Between(ball->pos.y, racketRight->pos.y + racketRight->height, racketRight->pos.y)) {
 
-			this->ball->RacketLastTouched = &racketRight;
-			this->ball->velocityX = -ball->velocityX;
+			ball->RacketLastTouched = &racketRight;
+			ball->velocityX = -ball->velocityX;
 
-			if (Between(this->ball->pos.y, this->racketRight->pos.y, this->racketRight->pos.y + this->racketRight->height * 0.3)) {
+			if (Between(ball->pos.y, racketRight->pos.y, racketRight->pos.y + racketRight->height * 0.3)) {
 
-				this->ball->velocityY -= 0.3;
+				ball->velocityY -= 0.3;
 
 			}
-			else if (Between(this->ball->pos.y, this->racketRight->pos.y + this->racketRight->height - this->racketRight->height * 0.3, this->racketRight->pos.y + this->racketRight->height)) {
+			else if (Between(ball->pos.y, racketRight->pos.y + racketRight->height - racketRight->height * 0.3, racketRight->pos.y + racketRight->height)) {
 
-				this->ball->velocityY += 0.3;
+				ball->velocityY += 0.3;
 			}
 		}
 		else {
 
-			this->scoreBoard->LeftScore++;
+			scoreBoard->LeftScore++;
 			Reset();
 		}
 	}
-	else if (this->ball->pos.x - this->racketLeft->width < this->racketLeft->width) { //ball at Left Edge
+	else if (ball->pos.x - racketLeft->width < racketLeft->width) { //ball at Left Edge
 
-		if (Between(this->ball->pos.y, this->racketLeft->pos.y + this->racketLeft->height, this->racketLeft->pos.y)) {
+		if (Between(ball->pos.y, racketLeft->pos.y + racketLeft->height, racketLeft->pos.y)) {
 
-			this->ball->RacketLastTouched = &racketLeft;
-			this->ball->velocityX = -this->ball->velocityX;
+			ball->RacketLastTouched = &racketLeft;
+			ball->velocityX = -ball->velocityX;
 
 			if (Between(ball->pos.y, racketLeft->pos.y, racketLeft->pos.y + racketLeft->height * 0.3)) {
 
-				this->ball->velocityY -= 0.3;
+				ball->velocityY -= 0.3;
 
 			}
-			else if (Between(this->ball->pos.y, this->racketLeft->pos.y + this->racketLeft->height - this->racketLeft->height * 0.3, this->racketLeft->pos.y + this->racketLeft->height)) {
+			else if (Between(ball->pos.y, racketLeft->pos.y + racketLeft->height - racketLeft->height * 0.3, racketLeft->pos.y + racketLeft->height)) {
 
-				this->ball->velocityY += 0.3;
+				ball->velocityY += 0.3;
 			}
 
 		}
 		else {
 
-			this->scoreBoard->RightScore++;
+			scoreBoard->RightScore++;
 			Reset();
 		}
 	}
 	else if (ball->pos.y - ball->radius < 0) { //ball at Top Edge
 
-		this->ball->pos.y = this->ball->radius;
-		this->ball->velocityY = -this->ball->velocityY;
+		ball->pos.y = ball->radius;
+		ball->velocityY = -ball->velocityY;
 
 	}
-	else if (this->ball->pos.y > gameHeight - this->ball->radius) { //ball at Bottom Edge
+	else if (ball->pos.y > GAME_HEIGHT - ball->radius) { //ball at Bottom Edge
 
-		this->ball->pos.y = gameHeight - this->ball->radius;
-		this->ball->velocityY = -this->ball->velocityY;
+		ball->pos.y = GAME_HEIGHT - ball->radius;
+		ball->velocityY = -ball->velocityY;
 	}
 
 }
