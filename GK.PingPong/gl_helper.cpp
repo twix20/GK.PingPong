@@ -27,6 +27,11 @@ void gl_helper::DebugPoint(float x, float y) {
 }
 
 
+void gl_helper::SetColor(float r, float g, float b)
+{
+	glColor3f(r, g, b);
+}
+
 void gl_helper::DrawRect(const int x, const int y, const int width, const int height)
 {
 	glBegin(GL_QUADS);
@@ -43,32 +48,15 @@ void gl_helper::DrawRect(const int x, const int y, const int width, const int he
 	glEnd();
 }
 
-void gl_helper::DrawCircle(int cx, int cy, float radius)
+void gl_helper::DrawCircle(const int x, const int y, const float radius)
 {
-	//glBegin(GL_LINE_LOOP);
-	//for (int i = 0; i < CIRCLE_SEGMENTS; i++)
-	//{
-	//	float theta = 2.0f * M_PI * float(i) / float(CIRCLE_SEGMENTS);//get the current angle 
-
-	//	const int x = radius * cosf(theta);//calculate the x component 
-	//	const int y = radius * sinf(theta);//calculate the y component 
-
-	//	printf("%d %d\n", x + cx, y + cy);
-
-	//	glVertex2f(x + cx, y + cy);//output vertex 
-	//}
-	//glEnd();
-
-
-	const unsigned int triangles = 20; // number of triangles
 	const float twoPi = 2.0f * M_PI;
 	glBegin(GL_TRIANGLE_FAN);
-	glVertex2f(cx, cy); // origin
-	float delta = twoPi / triangles;
-	for (unsigned int i = 0; i <= triangles; i++)
+	glVertex2f(x, y); // origin
+	const float delta = twoPi / CIRCLE_SEGMENTS;
+	for (unsigned int i = 0; i <= CIRCLE_SEGMENTS; i++)
 	{
-
-		glVertex2f(cx + (radius * cos(i *  delta)), cy + (radius * sin(i * delta)));
+		glVertex2f(x + (radius * cos(i *  delta)), y + (radius * sin(i * delta)));
 	}
 	glEnd();
 }

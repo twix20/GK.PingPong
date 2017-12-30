@@ -154,6 +154,9 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="CBall.h" />
+    <ClInclude Include="CEnchantment.h" />
+    <ClInclude Include="CGameController.h" />
+    <ClInclude Include="CGrowRacketEnchantment.h" />
     <ClInclude Include="CObject2D.h" />
     <ClInclude Include="CRacket.h" />
     <ClInclude Include="CScoreBoard.h" />
@@ -164,6 +167,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CBall.cpp" />
+    <ClCompile Include="CEnchantment.cpp" />
+    <ClCompile Include="CGameController.cpp" />
+    <ClCompile Include="CGrowRacketEnchantment.cpp" />
     <ClCompile Include="CObject2D.cpp" />
     <ClCompile Include="CRacket.cpp" />
     <ClCompile Include="CScoreBoard.cpp" />

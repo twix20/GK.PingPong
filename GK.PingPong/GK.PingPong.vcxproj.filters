@@ -39,6 +39,15 @@
     <ClInclude Include="CScoreBoard.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="CEnchantment.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CGrowRacketEnchantment.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CGameController.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -60,6 +69,15 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="CScoreBoard.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CEnchantment.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CGrowRacketEnchantment.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CGameController.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

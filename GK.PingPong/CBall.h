@@ -9,6 +9,8 @@ public:
 	float radius;
 	float velocityX, velocityY;
 
+	CRacket** RacketLastTouched;
+
 	CBall(Position2D position, float radius) ;
 	~CBall();
 

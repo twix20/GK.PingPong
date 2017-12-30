@@ -5,8 +5,9 @@ class CRacket : public CObject2D
 {
 public:
 	int width, height;
+	int racketSpeed;
 
-	CRacket(Position2D position, int width, int height);
+	CRacket(Position2D position, int width, int height, int racketSpeed);
 	~CRacket();
 	void DrawMe() override;
 };

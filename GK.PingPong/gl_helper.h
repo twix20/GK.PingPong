@@ -8,6 +8,8 @@ class gl_helper
 {
 public:
 
+	static void SetColor(float r, float g, float b);
+
 	static void DrawRect(int x, int y, int width, int height);
 	static void DrawCircle(int x, int y, float radius);
 	static void DrawNumber(int x, int y, int n);
