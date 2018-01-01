@@ -17,6 +17,8 @@
 #define RACKET_INIT_HEIGHT 100
 #define RACKET_INIT_SPEED 7
 
+#define BALL_INIT_RADIUS 10.0f
+
 #define GAME_WIDTH 450
 #define GAME_HEIGHT 450
 

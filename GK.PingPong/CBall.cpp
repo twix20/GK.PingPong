@@ -17,5 +17,6 @@ CBall::~CBall()
 
 void CBall::DrawMe()
 {
-	gl_helper::DrawCircle(this->pos.x, this->pos.y, this->radius);
+	//gl_helper::DrawCircle(this->pos.x, this->pos.y, this->radius);
+	gl_helper::DrawCircleTexture(this->pos.x, this->pos.y, this->radius, "C:/Users/User/Desktop/Studia/Grafika Komputerowa L/ProjektPingPong/GK.PingPong/Textures/soccer_ball.tga");
 }

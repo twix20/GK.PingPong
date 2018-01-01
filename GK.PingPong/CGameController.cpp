@@ -28,7 +28,7 @@ CGameController::CGameController()
 	racketRight = new CRacket({GAME_WIDTH - 10, GAME_HEIGHT / 2 - 50}, RACKET_INIT_WIDTH, RACKET_INIT_HEIGHT,
 	                          RACKET_INIT_SPEED);
 
-	ball = new CBall({GAME_WIDTH / 2 - 5, GAME_HEIGHT / 2 - 5}, 10.0f);
+	ball = new CBall({GAME_WIDTH / 2 - 5, GAME_HEIGHT / 2 - 5}, BALL_INIT_RADIUS);
 	scoreBoard = new CScoreBoard({GAME_WIDTH / 2, 10});
 
 	time = 0;
