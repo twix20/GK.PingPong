@@ -42,10 +42,16 @@
     <ClInclude Include="CEnchantment.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="CGrowRacketEnchantment.h">
+    <ClInclude Include="CGameController.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="CGameController.h">
+    <ClInclude Include="collision_helper.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CEnchantmentGenerator.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CRacketEnchantment.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -78,6 +84,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="CGameController.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="collision_helper.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CEnchantmentGenerator.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

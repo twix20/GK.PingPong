@@ -1,12 +1,17 @@
 #pragma once
+
+#include <vector>
 #include <GLFW/glfw3.h>
 
 #include <Windows.h>
-
 #include <iostream>
+
 #include "CBall.h"
 #include "CRacket.h"
 #include "CScoreBoard.h"
+//#include "CEnchantmentGenerator.h"
+
+//#include "CEnchantment.h"
 
 #define RACKET_INIT_WIDTH 10
 #define RACKET_INIT_HEIGHT 100
@@ -17,7 +22,8 @@
 
 typedef void(*KeysCallback)(GLFWwindow*, int, int, int, int);
 
-
+class CEnchantment;
+class CEnchantmentGenerator;
 class CGameController
 {
 public:
@@ -27,6 +33,9 @@ public:
 
 	CBall* ball;
 	CScoreBoard* scoreBoard;
+
+	std::vector<CEnchantment*> enchantments;
+	CEnchantmentGenerator* enchantment_generator;
 
 	double time;
 
@@ -38,7 +47,7 @@ public:
 	CGameController();
 	~CGameController();
 
-	void DrawAll();
+	void DrawAll() const;
 
 	void Start(KeysCallback keysCb);
 	void Reset();

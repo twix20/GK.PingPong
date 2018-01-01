@@ -1,5 +1,4 @@
 #include "stdafx.h"
-#include "CGameController.h"
 
 #include <Windows.h>
 
@@ -10,17 +9,31 @@
 #include "CBall.h"
 #include "CRacket.h"
 #include "CScoreBoard.h"
+#include "CRacketEnchantment.h"
+#include "gl_helper.h"
+#include "collision_helper.h"
 
+#include "CGameController.h"
+
+class CEnchantmentGenerator
+{
+public:
+	CEnchantmentGenerator(CGameController* c);
+	void TryToGenerate();
+};
 
 CGameController::CGameController()
 {
-	racketLeft = new CRacket({ 0, GAME_HEIGHT / 2 - 50 }, RACKET_INIT_WIDTH, RACKET_INIT_HEIGHT, RACKET_INIT_SPEED);
-	racketRight = new CRacket({ GAME_WIDTH - 10, GAME_HEIGHT / 2 - 50 }, RACKET_INIT_WIDTH, RACKET_INIT_HEIGHT, RACKET_INIT_SPEED);
+	racketLeft = new CRacket({0, GAME_HEIGHT / 2 - 50}, RACKET_INIT_WIDTH, RACKET_INIT_HEIGHT, RACKET_INIT_SPEED);
+	racketRight = new CRacket({GAME_WIDTH - 10, GAME_HEIGHT / 2 - 50}, RACKET_INIT_WIDTH, RACKET_INIT_HEIGHT,
+	                          RACKET_INIT_SPEED);
 
-	ball = new CBall({ GAME_WIDTH / 2 - 5, GAME_HEIGHT / 2 - 5 }, 10.0f);
-	scoreBoard = new CScoreBoard({ GAME_WIDTH / 2, 10 });
+	ball = new CBall({GAME_WIDTH / 2 - 5, GAME_HEIGHT / 2 - 5}, 10.0f);
+	scoreBoard = new CScoreBoard({GAME_WIDTH / 2, 10});
+
+	time = 0;
+	enchantment_generator = new CEnchantmentGenerator(this);
 }
-
 
 CGameController::~CGameController()
 {
@@ -29,8 +42,9 @@ CGameController::~CGameController()
 	delete scoreBoard;
 }
 
-void CGameController::DrawAll()
+void CGameController::DrawAll() const
 {
+	gl_helper::SetColor(255, 255, 255);
 	//Left Racket
 	racketLeft->DrawMe();
 	//Right Racket
@@ -39,6 +53,11 @@ void CGameController::DrawAll()
 	ball->DrawMe();
 	//Score Board
 	scoreBoard->DrawMe();
+
+	for (auto it = enchantments.begin(); it != enchantments.end(); ++it)
+	{
+		(*it)->DrawMe();
+	}
 }
 
 void CGameController::Start(const KeysCallback keysCb)
@@ -73,6 +92,8 @@ void CGameController::Start(const KeysCallback keysCb)
 		glClearColor(0.0f, 0.0f, 0.0f, 0);
 
 		glClear(GL_COLOR_BUFFER_BIT);
+
+		enchantment_generator->TryToGenerate();
 
 		//Collision Detection
 		Collisions();
@@ -112,6 +133,11 @@ void CGameController::Reset()
 	racketLeft->height = RACKET_INIT_HEIGHT;
 	racketLeft->width = RACKET_INIT_WIDTH;
 
+	//Delete enchantments
+	for (int i = 0; i< enchantments.size(); i++)
+		delete (enchantments[i]);
+	enchantments.clear();
+
 	if (scoreBoard->ShouldGameEnd()) {
 		scoreBoard->Reset();
 	}
@@ -138,20 +164,20 @@ void CGameController::Collisions() {
 		}
 	}
 
-
+	//TODO: To do racket?
 	if (ball->pos.x > GAME_WIDTH - racketRight->width * 2) { //ball at Right Edge
 
-		if (Between(ball->pos.y, racketRight->pos.y + racketRight->height, racketRight->pos.y)) {
+		if (collision_helper::Between(ball->pos.y, racketRight->pos.y + racketRight->height, racketRight->pos.y)) {
 
 			ball->RacketLastTouched = &racketRight;
 			ball->velocityX = -ball->velocityX;
 
-			if (Between(ball->pos.y, racketRight->pos.y, racketRight->pos.y + racketRight->height * 0.3)) {
+			if (collision_helper::Between(ball->pos.y, racketRight->pos.y, racketRight->pos.y + racketRight->height * 0.3)) {
 
 				ball->velocityY -= 0.3;
 
 			}
-			else if (Between(ball->pos.y, racketRight->pos.y + racketRight->height - racketRight->height * 0.3, racketRight->pos.y + racketRight->height)) {
+			else if (collision_helper::Between(ball->pos.y, racketRight->pos.y + racketRight->height - racketRight->height * 0.3, racketRight->pos.y + racketRight->height)) {
 
 				ball->velocityY += 0.3;
 			}
@@ -164,17 +190,17 @@ void CGameController::Collisions() {
 	}
 	else if (ball->pos.x - racketLeft->width < racketLeft->width) { //ball at Left Edge
 
-		if (Between(ball->pos.y, racketLeft->pos.y + racketLeft->height, racketLeft->pos.y)) {
+		if (collision_helper::Between(ball->pos.y, racketLeft->pos.y + racketLeft->height, racketLeft->pos.y)) {
 
 			ball->RacketLastTouched = &racketLeft;
 			ball->velocityX = -ball->velocityX;
 
-			if (Between(ball->pos.y, racketLeft->pos.y, racketLeft->pos.y + racketLeft->height * 0.3)) {
+			if (collision_helper::Between(ball->pos.y, racketLeft->pos.y, racketLeft->pos.y + racketLeft->height * 0.3)) {
 
 				ball->velocityY -= 0.3;
 
 			}
-			else if (Between(ball->pos.y, racketLeft->pos.y + racketLeft->height - racketLeft->height * 0.3, racketLeft->pos.y + racketLeft->height)) {
+			else if (collision_helper::Between(ball->pos.y, racketLeft->pos.y + racketLeft->height - racketLeft->height * 0.3, racketLeft->pos.y + racketLeft->height)) {
 
 				ball->velocityY += 0.3;
 			}
@@ -198,12 +224,18 @@ void CGameController::Collisions() {
 		ball->velocityY = -ball->velocityY;
 	}
 
-}
-
-bool CGameController::Between(const int target, int a, int b) {
-
-	const int max = max(a, b);
-	const int min = min(a, b);
-
-	return target < max && target > min;
+	//Enchantments collision
+	auto it = enchantments.begin();
+	while (it != enchantments.end())
+	{
+		if ((*it)->IsCollision(ball))
+		{
+			(*it)->DoOnCollision(this);
+			it = enchantments.erase(it);
+		}
+		else
+		{
+			++it;
+		}
+	}
 }

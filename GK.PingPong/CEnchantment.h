@@ -1,6 +1,4 @@
 #pragma once
-#include "CObject2D.h"
-#include "CBall.h"
 #include "CGameController.h"
 
 class CEnchantment : public CObject2D

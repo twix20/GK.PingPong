@@ -155,9 +155,11 @@
   <ItemGroup>
     <ClInclude Include="CBall.h" />
     <ClInclude Include="CEnchantment.h" />
+    <ClInclude Include="CEnchantmentGenerator.h" />
     <ClInclude Include="CGameController.h" />
-    <ClInclude Include="CGrowRacketEnchantment.h" />
+    <ClInclude Include="CRacketEnchantment.h" />
     <ClInclude Include="CObject2D.h" />
+    <ClInclude Include="collision_helper.h" />
     <ClInclude Include="CRacket.h" />
     <ClInclude Include="CScoreBoard.h" />
     <ClInclude Include="gl_helper.h" />
@@ -168,9 +170,11 @@
   <ItemGroup>
     <ClCompile Include="CBall.cpp" />
     <ClCompile Include="CEnchantment.cpp" />
+    <ClCompile Include="CEnchantmentGenerator.cpp" />
     <ClCompile Include="CGameController.cpp" />
     <ClCompile Include="CGrowRacketEnchantment.cpp" />
     <ClCompile Include="CObject2D.cpp" />
+    <ClCompile Include="collision_helper.cpp" />
     <ClCompile Include="CRacket.cpp" />
     <ClCompile Include="CScoreBoard.cpp" />
     <ClCompile Include="GK.PingPong.cpp" />
