@@ -18,6 +18,7 @@
 #define RACKET_INIT_SPEED 7
 
 #define BALL_INIT_RADIUS 10.0f
+#define MAX_BALL_SPEED 0.5
 
 #define GAME_WIDTH 450
 #define GAME_HEIGHT 450
@@ -43,16 +44,14 @@ public:
 
 	float StoredVelocity = 0.0f;
 
-	//ball Speed
-	double TimeSpeed = 0.2;
-
 	CGameController();
 	~CGameController();
 
+	void MoveBall();
 	void DrawAll() const;
 
 	void Start(KeysCallback keysCb);
-	void Reset();
+	void ResetGame();
 
 	void Collisions();
 	static bool Between(int target, int min, int max);

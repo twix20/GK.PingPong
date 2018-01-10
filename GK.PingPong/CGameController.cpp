@@ -15,6 +15,7 @@
 
 #include "CGameController.h"
 
+
 class CEnchantmentGenerator
 {
 public:
@@ -40,6 +41,22 @@ CGameController::~CGameController()
 	delete racketLeft, racketRight;
 	delete ball;
 	delete scoreBoard;
+}
+
+void CGameController::MoveBall()
+{
+	if(ball->velocityY > MAX_BALL_SPEED)
+		ball->velocityY = MAX_BALL_SPEED;
+	else if(ball->velocityY < -MAX_BALL_SPEED)
+		ball->velocityY = -MAX_BALL_SPEED;
+
+
+	ball->pos.x += ball->velocityX;
+	StoredVelocity += ball->velocityY;
+
+
+	ball->pos.y += StoredVelocity >= 1.0f ? 1 : -1;
+	StoredVelocity += StoredVelocity >= 1.0f ? -1 : 1;
 }
 
 void CGameController::DrawAll() const
@@ -72,59 +89,54 @@ void CGameController::Start(const KeysCallback keysCb)
 
 	glfwSetKeyCallback(window, keysCb);
 
-	time = glfwGetTime()*TimeSpeed;
+	time = glfwGetTime();
 
 	while (!glfwWindowShouldClose(window)) {
 
 		//2D Mode		
 		glMatrixMode(GL_PROJECTION);
-
 		glLoadIdentity();
-
 		glOrtho(0, GAME_WIDTH, GAME_HEIGHT, 0, 0, 1);
-
 		glDisable(GL_DEPTH_TEST);
-
 		glMatrixMode(GL_MODELVIEW);
-
 		glLoadIdentity();
-
 		glClearColor(0.0f, 0.0f, 0.0f, 0);
-
 		glClear(GL_COLOR_BUFFER_BIT);
 
+		//Generate enchantments
 		enchantment_generator->TryToGenerate();
+
+		//Move ball
+		MoveBall();
 
 		//Collision Detection
 		Collisions();
 
+		//Draw objects on screen
 		DrawAll();
 
 		glfwSwapBuffers(window);
 		glfwSwapInterval(1);
 		glfwPollEvents();
-
 	}
 
 	glfwDestroyWindow(window);
 	glfwTerminate();
-
-
 }
 
-void CGameController::Reset()
+void CGameController::ResetGame()
 {
 	glfwSetTime(0.0);
 	time = 0.0;
 
-	//Reset ball
+	//ResetGame ball
 	ball->pos.x = GAME_WIDTH / 2 - ball->radius / 2;
 	ball->velocityX = 1;
 	ball->velocityY = 0;
 
 	StoredVelocity = 0;
 
-	//Reset Rackets
+	//ResetGame Rackets
 	racketRight->racketSpeed = RACKET_INIT_SPEED;
 	racketRight->height = RACKET_INIT_HEIGHT;
 	racketRight->width = RACKET_INIT_WIDTH;
@@ -145,25 +157,6 @@ void CGameController::Reset()
 
 void CGameController::Collisions() {
 
-	if (glfwGetTime() - time > 1.0) {
-
-		time = glfwGetTime()*TimeSpeed;
-
-		ball->pos.x += ball->velocityX;
-
-		StoredVelocity += ball->velocityY;
-
-		if (StoredVelocity > 1.0f) {
-			ball->pos.y += 1;
-			StoredVelocity -= 1;
-		}
-		else if (StoredVelocity < -1.0f) {
-			ball->pos.y -= 1;
-			StoredVelocity += 1;
-
-		}
-	}
-
 	//TODO: To do racket?
 	if (ball->pos.x > GAME_WIDTH - racketRight->width * 2) { //ball at Right Edge
 
@@ -183,9 +176,8 @@ void CGameController::Collisions() {
 			}
 		}
 		else {
-
 			scoreBoard->LeftScore++;
-			Reset();
+			ResetGame();
 		}
 	}
 	else if (ball->pos.x - racketLeft->width < racketLeft->width) { //ball at Left Edge
@@ -207,21 +199,24 @@ void CGameController::Collisions() {
 
 		}
 		else {
-
 			scoreBoard->RightScore++;
-			Reset();
+			ResetGame();
 		}
 	}
-	else if (ball->pos.y - ball->radius < 0) { //ball at Top Edge
 
-		ball->pos.y = ball->radius;
+	if (static_cast<int>(ball->pos.y - ball->radius) < 0) { //ball at Top Edge
+
+		ball->pos.y = ball->radius + 5;
 		ball->velocityY = -ball->velocityY;
 
+		StoredVelocity += StoredVelocity >= 1.0f ? -1 : 1;
 	}
-	else if (ball->pos.y > GAME_HEIGHT - ball->radius) { //ball at Bottom Edge
+	if (ball->pos.y > static_cast<int>(GAME_HEIGHT - ball->radius)) { //ball at Bottom Edge
 
-		ball->pos.y = GAME_HEIGHT - ball->radius;
+		ball->pos.y = GAME_HEIGHT - ball->radius - 5;
 		ball->velocityY = -ball->velocityY;
+
+		StoredVelocity += StoredVelocity >= 1.0f ? -1 : 1;
 	}
 
 	//Enchantments collision

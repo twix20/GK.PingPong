@@ -33,7 +33,6 @@ void CEnchantmentGenerator::TryToGenerate()
 		Position2D p = { randNum(leftBottom.x, rightTop.x), randNum(leftBottom.y, rightTop.y) };
 		CRacketEnchantment* e = new CRacketEnchantment(p, 20, 20, randNum(-10, 20));
 
-		std::cout << e->enchantValue << std::endl;
 		//Max 5 enchantments at once
 		if(game->enchantments.size() >= 5)
 		{
