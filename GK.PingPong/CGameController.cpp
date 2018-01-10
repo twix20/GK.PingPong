@@ -84,7 +84,7 @@ void CGameController::Start(const KeysCallback keysCb)
 	//Hints Before Window Creation
 	glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
 
-	GLFWwindow * window = glfwCreateWindow(GAME_WIDTH, GAME_HEIGHT, "PingPong", nullptr, nullptr);
+	GLFWwindow * window = glfwCreateWindow(GAME_WIDTH, GAME_HEIGHT, "PingPong - Piotr Markiewicz 226020", nullptr, nullptr);
 	glfwMakeContextCurrent(window);
 
 	glfwSetKeyCallback(window, keysCb);

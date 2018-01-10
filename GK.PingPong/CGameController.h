@@ -53,6 +53,5 @@ public:
 	void ResetGame();
 
 	void Collisions();
-	static bool Between(int target, int min, int max);
 };
 
